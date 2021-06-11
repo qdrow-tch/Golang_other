@@ -2,10 +2,11 @@ package main
 
 import (
 	"fmt"
+	"strconv"
 )
 
 func main() {
-	var command int
+	var cm_cach string
 	var operand_1 float64
 	var operand_2 float64
 	for {
@@ -16,8 +17,10 @@ func main() {
 		fmt.Println("0.Выход")
 
 		fmt.Println("Введите номер операции калькулятора: ")
+		fmt.Scanln(&cm_cach)
+		command, err := strconv.Atoi(cm_cach)
 
-		if _, err := fmt.Scanln(&command); err != nil {
+		if err != nil {
 			fmt.Println("Ошибка ввода команды, проверьте правильность ввода, необходимо ввести номер операции!")
 		} else {
 			if command >= 0 && command <= 4 {
