@@ -8,25 +8,24 @@ func main() {
 
 	data := []int{7, 3, 4, 5, 12, 8, 10, 3, 5, 2}
 
-	sorting(data)
-
-	fmt.Println(data)
+	fmt.Println(sorting(data))
 
 }
 
-func sorting(data []int) {
+func sorting(data []int) []int {
 	cach := 0
-	for i := 0; i < len(data); i++ {
-		fmt.Println("i: ", i)
+	slice_cach := make([]int, len(data))
+	copy(slice_cach, data)
+	for i := 0; i < len(slice_cach); i++ {
 		for j := 0; j < i; j++ {
-			fmt.Println("j: ", j)
-			if data[i] < data[j] {
-				cach = data[i]
+			if slice_cach[i] < slice_cach[j] {
+				cach = slice_cach[i]
 				for mv := i; mv > j; mv-- {
-					data[mv] = data[mv-1]
+					slice_cach[mv] = slice_cach[mv-1]
 				}
-				data[j] = cach
+				slice_cach[j] = cach
 			}
 		}
 	}
+	return slice_cach
 }
