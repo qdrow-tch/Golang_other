@@ -7,7 +7,7 @@ import (
 
 func main() {
 
-	value := foo.NewConfig()
+	value := foo.FileConfig()
 
 	fmt.Println(value)
 }

@@ -2,18 +2,67 @@ package foo
 
 import (
 	"flag"
+	"log"
+	"os"
+	"yaml-2"
 )
 
 type Config struct {
 	port         string
 	db_url       string
+	jaeger_url   string
+	sentry_url   string
+	kafka_broker string
 	some_app_id  int
 	some_app_key int
 }
 
-func NewConfig() *Config {
+func FileConfig() *Config {
+
+	d_conf := Config{}
+
+	var path_config = flag.String("path_config", "none", "path to file config")
+	flag.Parse()
+	file, err := os.Open(*path_config)
+	if err != nil {
+		log.Printf("Не могу открыть файл: %v", err)
+	}
+
+	f_info, err := os.Stat(*path_config)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	data := make([]byte, f_info.Size())
+
+	_, err = file.Read(data)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	log.Println(data)
+	err = yaml.Unmarshal([]byte(data), &d_conf)
+	//err = yaml.NewDecoder(file).Decode(&d_conf)
+	if err != nil {
+		log.Fatalln(err)
+	}
+
+	defer func() {
+		err := file.Close()
+		if err != nil {
+			log.Printf("Не могу закрыть файл: %v", err)
+		}
+	}()
+
+	return &d_conf
+}
+
+func ConsConfig() *Config {
 	var port_cache = flag.String("port", "8080", "Port number")
 	var db_url_cache = flag.String("db_url", "postgres://db-user:db-password@petstore-db:5432/petstore?sslmode=disable", "Database url")
+	var jaeger_url_cache = flag.String("jaeger_url", "http://jaeger:16686", "jaeger  link")
+	var sentry_url_cache = flag.String("sentry_url", "http://sentry:9000", "sentry link")
+	var kafka_broker_cache = flag.String("kafka_broker", "kafka:9092", "user info")
 	var some_app_id_cache = flag.Int("id", 0, "Some app id")
 	var some_app_key_cache = flag.Int("key", 0, "Some app key")
 
@@ -22,6 +71,9 @@ func NewConfig() *Config {
 	return &Config{
 		port:         *port_cache,
 		db_url:       *db_url_cache,
+		jaeger_url:   *jaeger_url_cache,
+		sentry_url:   *sentry_url_cache,
+		kafka_broker: *kafka_broker_cache,
 		some_app_id:  *some_app_id_cache,
 		some_app_key: *some_app_key_cache,
 	}
