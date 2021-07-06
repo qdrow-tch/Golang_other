@@ -8,13 +8,13 @@ import (
 )
 
 type Config struct {
-	port         string
-	db_url       string
-	jaeger_url   string
-	sentry_url   string
-	kafka_broker string
-	some_app_id  int
-	some_app_key int
+	Port         string
+	Db_url       string
+	Jaeger_url   string
+	Sentry_url   string
+	Kafka_broker string
+	Some_app_id  int
+	Some_app_key int
 }
 
 func FileConfig() *Config {
@@ -69,12 +69,12 @@ func ConsConfig() *Config {
 	flag.Parse()
 
 	return &Config{
-		port:         *port_cache,
-		db_url:       *db_url_cache,
-		jaeger_url:   *jaeger_url_cache,
-		sentry_url:   *sentry_url_cache,
-		kafka_broker: *kafka_broker_cache,
-		some_app_id:  *some_app_id_cache,
-		some_app_key: *some_app_key_cache,
+		Port:         *port_cache,
+		Db_url:       *db_url_cache,
+		Jaeger_url:   *jaeger_url_cache,
+		Sentry_url:   *sentry_url_cache,
+		Kafka_broker: *kafka_broker_cache,
+		Some_app_id:  *some_app_id_cache,
+		Some_app_key: *some_app_key_cache,
 	}
 }
