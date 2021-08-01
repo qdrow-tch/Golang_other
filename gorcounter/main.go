@@ -14,15 +14,15 @@ func main() {
 		go func(id int) {
 			for {
 				cach := <-counter
-				fmt.Println("Счетчик: %d", cach)
 				if cach == 1000 {
 					break
 				}
 				cach++
 				counter <- cach
+				fmt.Println("Worker ", id, " push value: ", cach)
 			}
 		}(i)
 	}
 
-	time.Sleep(6 * time.Second)
+	time.Sleep(2 * time.Second)
 }
