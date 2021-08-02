@@ -5,14 +5,36 @@ import (
 	"fmt"
 	"os"
 	"os/signal"
+	"sync"
 	"syscall"
 	"time"
 )
 
+func counWorker(wg *sync.WaitGroup, id int, ctx context.Context, counter chan int) {
+	wg.Add(1)
+	defer wg.Done()
+	for {
+		select {
+		case <-ctx.Done():
+			return
+		default:
+			cach := <-counter
+			if cach == 1000 {
+				break
+			}
+			cach++
+			counter <- cach
+			fmt.Println("Worker ", id, " push value: ", cach)
+		}
+	}
+}
+
 func main() {
 
+	wg := &sync.WaitGroup{}
+
 	counter := make(chan int, 1)
-	counter <- 1
+	counter <- 0
 
 	ctx := context.Background()
 	cancelableCtx, cancelfunc := context.WithTimeout(ctx, 1*time.Second)
@@ -28,26 +50,11 @@ func main() {
 		}(cancelableCtx)
 	}()
 
-	for i := 0; i < 10; i++ {
-		go func(id int, ctx context.Context) {
-			for {
-				select {
-				case <-ctx.Done():
-					return
-				default:
-					cach := <-counter
-					if cach == 1000 {
-						break
-					}
-					time.Sleep(1 * time.Second)
-					cach++
-					counter <- cach
-					fmt.Println("Worker ", id, " push value: ", cach)
-				}
-			}
-		}(i, ctx)
+	for i := 0; i < 5; i++ {
+		go counWorker(wg, i, ctx, counter)
 	}
 
-	time.Sleep(20 * time.Second)
+	wg.Wait()
+	fmt.Println("Some text")
 	cancelfunc()
 }
