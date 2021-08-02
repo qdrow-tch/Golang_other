@@ -54,6 +54,7 @@ func main() {
 		go counWorker(wg, i, ctx, counter)
 	}
 
+	time.Sleep(1 * time.Second)
 	wg.Wait()
 	fmt.Println("Some text")
 	cancelfunc()
