@@ -23,7 +23,9 @@ func main() {
 	go func() {
 		gotsign := <-sigchecker
 		fmt.Println(gotsign)
-		cancelfunc()
+		func(context.Context) {
+
+		}(cancelableCtx)
 	}()
 
 	for i := 0; i < 10; i++ {
@@ -37,13 +39,15 @@ func main() {
 					if cach == 1000 {
 						break
 					}
+					time.Sleep(1 * time.Second)
 					cach++
 					counter <- cach
 					fmt.Println("Worker ", id, " push value: ", cach)
 				}
 			}
-		}(i, cancelableCtx)
+		}(i, ctx)
 	}
 
-	time.Sleep(7 * time.Second)
+	time.Sleep(20 * time.Second)
+	cancelfunc()
 }
