@@ -35,19 +35,24 @@ func main() {
 				case <-ctx.Done():
 					return
 				default:
-					cach := <-counter
+					cach, ok := <-counter
 					if cach == 1000 {
-						break
+						close(counter)
+						return
 					}
-					time.Sleep(1 * time.Second)
-					cach++
-					counter <- cach
-					fmt.Println("Worker ", id, " push value: ", cach)
+					if ok {
+						cach++
+						fmt.Println("Worker ", id, " push value: ", cach)
+						counter <- cach
+					} else {
+						return
+					}
+
 				}
 			}
 		}(i, ctx)
 	}
 
-	time.Sleep(20 * time.Second)
+	time.Sleep(3 * time.Second)
 	cancelfunc()
 }
