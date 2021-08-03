@@ -28,8 +28,8 @@ func counWorker(wg *sync.WaitGroup, id int, ctx context.Context, counter chan in
 			}
 			if ok {
 				cach++
-				counter <- cach
 				fmt.Println("Worker ", id, " push value: ", cach)
+				counter <- cach
 			} else {
 				return
 			}
