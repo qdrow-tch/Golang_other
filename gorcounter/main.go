@@ -11,20 +11,28 @@ import (
 )
 
 func counWorker(wg *sync.WaitGroup, id int, ctx context.Context, counter chan int) {
-	wg.Add(1)
-	defer wg.Done()
+
+	defer func() {
+		wg.Done()
+		fmt.Println("Stop")
+	}()
 	for {
 		select {
 		case <-ctx.Done():
 			return
 		default:
-			cach := <-counter
-			if cach == 1000 {
-				break
+			cach, ok := <-counter
+			if cach >= 1000 {
+				close(counter)
+				return
 			}
-			cach++
-			counter <- cach
-			fmt.Println("Worker ", id, " push value: ", cach)
+			if ok {
+				cach++
+				counter <- cach
+				fmt.Println("Worker ", id, " push value: ", cach)
+			} else {
+				return
+			}
 		}
 	}
 }
@@ -51,11 +59,11 @@ func main() {
 	}()
 
 	for i := 0; i < 5; i++ {
+		wg.Add(1)
 		go counWorker(wg, i, ctx, counter)
 	}
 
-	time.Sleep(1 * time.Second)
 	wg.Wait()
-	fmt.Println("Some text")
+	fmt.Println("All gorutinse was stoped")
 	cancelfunc()
 }
