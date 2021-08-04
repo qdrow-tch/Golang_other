@@ -30,6 +30,7 @@ func counWorker(wg *sync.WaitGroup, id int, ctx context.Context, counter chan in
 				cach++
 				fmt.Println("Worker ", id, " push value: ", cach)
 				counter <- cach
+				time.Sleep(1 * time.Second)
 			} else {
 				return
 			}
@@ -44,18 +45,21 @@ func main() {
 	counter := make(chan int, 1)
 	counter <- 0
 
-	ctx := context.Background()
-	cancelableCtx, cancelfunc := context.WithTimeout(ctx, 1*time.Second)
+	ctx, topCtxClose := context.WithCancel(context.Background())
 
 	sigchecker := make(chan os.Signal, 2)
 	signal.Notify(sigchecker, syscall.SIGTERM)
 
 	go func() {
 		gotsign := <-sigchecker
-		fmt.Println(gotsign)
-		func(context.Context) {
-
-		}(cancelableCtx)
+		cancelableCtx, cancelfunc := context.WithTimeout(ctx, 3*time.Second)
+		defer cancelfunc()
+		select {
+		case <-cancelableCtx.Done():
+			fmt.Println(gotsign)
+			topCtxClose()
+		}
+		fmt.Println("Exit gorutin")
 	}()
 
 	for i := 0; i < 5; i++ {
@@ -65,5 +69,4 @@ func main() {
 
 	wg.Wait()
 	fmt.Println("All gorutinse was stoped")
-	cancelfunc()
 }
