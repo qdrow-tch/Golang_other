@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"sync"
 
 	"github.com/pkg/profile"
@@ -23,6 +24,7 @@ func main() {
 			for {
 				select {
 				case <-count_ctx.Done():
+					fmt.Println("Горутина № ", id, " завершила работу")
 					return
 				default:
 					counter.Add()
