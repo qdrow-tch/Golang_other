@@ -2,3 +2,5 @@
 task8/foo/go.mod
 
 gorcounter/gorcounter.exe
+
+*.exe

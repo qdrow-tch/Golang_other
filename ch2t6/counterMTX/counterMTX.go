@@ -3,11 +3,10 @@ package counterMTX
 import (
 	"context"
 	"fmt"
-	"sync"
 )
 
 type Counter struct {
-	sync.Mutex
+	//sync.Mutex
 	value   int64
 	max_val int64
 	stop_F  context.CancelFunc
@@ -22,8 +21,8 @@ func NewCounter(size int64, exit_F context.CancelFunc) *Counter {
 }
 
 func (c *Counter) Add() {
-	c.Lock()
-	defer c.Unlock()
+	//c.Lock()
+	//defer c.Unlock()
 	if c.value >= c.max_val {
 		c.stop_F()
 		return
