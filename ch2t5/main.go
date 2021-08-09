@@ -1,5 +1,7 @@
 package main
 
+//Залить в ветку для размещения на сайте
+
 import "sync"
 
 type Set struct {
