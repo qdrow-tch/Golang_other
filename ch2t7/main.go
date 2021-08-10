@@ -8,7 +8,8 @@ import (
 
 func main() {
 
-	goodquery, values := sql_parser.Parse_query("SELECT * FROM table WHERE deleted = ? AND id IN(?) AND count < ?", false, []int{1, 6, 234}, 555)
+	query := "SELECT * FROM table WHERE deleted = ? AND id IN(?) AND count < ?"
+	goodquery, values := sql_parser.Parse_query(query, false, []int{1, 6, 234}, 555)
 	fmt.Println(goodquery, values)
 
 }

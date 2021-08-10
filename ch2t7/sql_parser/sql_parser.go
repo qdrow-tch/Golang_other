@@ -7,6 +7,9 @@ import (
 
 func Parse_query(q string, args ...interface{}) (string, []interface{}) {
 
+	if args == nil {
+		return q, []interface{}{}
+	}
 	outsl := []interface{}{}
 
 	slq := strings.Split(q, "?")
