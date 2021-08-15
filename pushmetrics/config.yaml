@@ -1,0 +1,2 @@
+fileconvert: ./exchangerate.yaml
+port: :8080
